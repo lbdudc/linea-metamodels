@@ -11,14 +11,14 @@ const constraints = {
   },
 
   // the fields of a form are fields of its entity (browser.scope.js), each at most once
-  FormDef(form, accept) {
+  BrowserFormDef(form, accept) {
     for (const { item, index } of duplicates(form.fields, f => refName(f.property))) {
       accept('error', `field '${refName(item.property)}' is listed twice`, { node: form, property: 'fields', index });
     }
   },
 
   // the columns are fields of the entity, each at most once; the form a list opens is the form of its entity
-  ListDef(list, accept) {
+  BrowserListDef(list, accept) {
     for (const { item, index } of duplicates(list.columns, c => refName(c.property))) {
       accept('error', `column '${refName(item.property)}' is listed twice`, { node: list, property: 'columns', index });
     }

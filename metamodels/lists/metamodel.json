@@ -1,6 +1,6 @@
 {
   "name": "lists",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Lists: tables of data-model entities, with the columns to show and how to sort them. Optional in a product; needs the data model",
   "requires": {
     "../common": "^1.0.0",

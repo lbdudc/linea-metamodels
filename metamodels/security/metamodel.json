@@ -1,6 +1,6 @@
 {
   "name": "security",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Security: users, roles and what each role may do with entities, forms and lists. Needs the data model, the forms and the lists",
   "requires": {
     "../common": "^1.0.0",

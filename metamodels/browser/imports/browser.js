@@ -4,10 +4,10 @@ const importer = function (json, { n }) {
   // a name that is not a plain word is written in quotes (its uses are written the same way)
   const q = text => (text === undefined ? undefined : /^[_a-zA-Z][\w-]*$/.test(text) ? text : JSON.stringify(text));
 
-  const field = f => n('FormField', { property: f.property, viewed: f.viewing, edited: f.editing });
+  const field = f => n('BrowserFormField', { property: f.property, viewed: f.viewing, edited: f.editing });
 
   const form = f =>
-    n('FormDef', {
+    n('BrowserFormDef', {
       name: q(f.id),
       entity: f.entity,
       abstract: f.abstract,
@@ -19,10 +19,10 @@ const importer = function (json, { n }) {
     });
 
   // the form of a column is written when it is not the form of the list
-  const column = (c, l) => n('ListColumn', { property: c.property, form: c.form !== l.form ? q(c.form) : undefined });
+  const column = (c, l) => n('BrowserListColumn', { property: c.property, form: c.form !== l.form ? q(c.form) : undefined });
 
   const list = l =>
-    n('ListDef', {
+    n('BrowserListDef', {
       name: q(l.id),
       entity: l.entity,
       abstract: l.abstract,

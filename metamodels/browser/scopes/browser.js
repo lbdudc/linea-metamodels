@@ -12,10 +12,10 @@ const fieldsOf = entity => {
 
 /** @type {Scope} */
 const scope = {
-  FormField: {
+  BrowserFormField: {
     property: field => fieldsOf(field.$container.entity?.ref)
   },
-  ListColumn: {
+  BrowserListColumn: {
     property: column => fieldsOf(column.$container.entity?.ref)
   }
 };

@@ -33,5 +33,16 @@
         "field 'name' is listed twice"
       ]
     }
+  },
+  {
+    "name": "a field of a form may be a field the entity takes from the one it extends",
+    "with": {
+      "datamodel": "datamodel d\nabstract entity Vehicle {\n  property plate: String pk\n}\nentity Van extends Vehicle {\n  property seats: Integer\n}\n"
+    },
+    "text": "forms\nform VanForm entity Van {\n  field plate\n  field seats\n}\n",
+    "expect": {
+      "errors": [],
+      "warnings": []
+    }
   }
 ]

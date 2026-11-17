@@ -33,5 +33,16 @@
         "pageSize must be at least 1"
       ]
     }
+  },
+  {
+    "name": "a column of a list may be a field the entity takes from the one it extends",
+    "with": {
+      "datamodel": "datamodel d\nabstract entity Vehicle {\n  property plate: String pk\n}\nentity Van extends Vehicle {\n  property seats: Integer\n}\n"
+    },
+    "text": "lists\nlist VanList entity Van {\n  column plate\n  column seats\n}\n",
+    "expect": {
+      "errors": [],
+      "warnings": []
+    }
   }
 ]
