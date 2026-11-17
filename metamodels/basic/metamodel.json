@@ -1,0 +1,8 @@
+{
+  "name": "basic",
+  "version": "3.0.0",
+  "description": "Basic: the product's name, version, SRID, languages, package, database and deployment settings",
+  "requires": {
+    "../common": "^1.1.0"
+  }
+}

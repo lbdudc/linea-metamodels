@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    # a metamodel is data that LINEA reads: it is valid when LINEA's own tests, which build products from it, pass
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: linea-metamodels
+      - uses: actions/checkout@v4
+        with:
+          repository: lbdudc/linea
+          path: linea
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: linea/package-lock.json
+      - run: npm ci && npm run build
+        working-directory: linea
+      - run: npx vitest run
+        working-directory: linea/apps/server
+        env:
+          LINEA_METAMODELS_DIR: ${{ github.workspace }}/linea-metamodels
+      - run: npm test -w @lbdudc/linea-core
+        working-directory: linea

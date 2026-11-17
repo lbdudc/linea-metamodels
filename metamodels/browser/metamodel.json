@@ -1,0 +1,9 @@
+{
+  "name": "browser",
+  "version": "1.0.0",
+  "description": "Lists and forms: the tables and the data-entry forms of the product, one of each over each data-model entity, with what a person can do with them and the fields they show. Needs the data model",
+  "requires": {
+    "../common": "^1.1.0",
+    "../datamodel": "^1.2.0"
+  }
+}

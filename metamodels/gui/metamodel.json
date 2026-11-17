@@ -1,0 +1,8 @@
+{
+  "name": "gui",
+  "version": "1.0.0",
+  "description": "Interface: where the menus of the product are (the design), its font and its colours",
+  "requires": {
+    "../common": "^1.1.0"
+  }
+}

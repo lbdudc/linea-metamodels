@@ -1,0 +1,8 @@
+{
+  "name": "statics",
+  "version": "1.0.0",
+  "description": "Static pages: pages of HTML the product shows (a home page, an about page), each with a name",
+  "requires": {
+    "../common": "^1.1.0"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "datamodel",
+  "version": "1.2.0",
+  "description": "Data model: entities made of property fields and relationship fields, enumerations and inheritance",
+  "requires": {
+    "../common": "^1.1.0"
+  }
+}

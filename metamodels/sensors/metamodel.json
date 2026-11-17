@@ -1,0 +1,10 @@
+{
+  "name": "sensors",
+  "version": "1.2.0",
+  "description": "Sensors: the sensors of the product, with their measurements and dimensions. Needs the data model and the GIS model",
+  "requires": {
+    "../common": "^1.1.0",
+    "../datamodel": "^1.2.0",
+    "../gismodel": "^2.0.0"
+  }
+}

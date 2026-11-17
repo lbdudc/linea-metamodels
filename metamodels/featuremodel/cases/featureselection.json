@@ -1,0 +1,308 @@
+[
+  {
+    "name": "a valid selection",
+    "with": {
+      "featuremodel": "featuremodel Phones\nfeature Phones {\n  mandatory {\n    feature Screen {\n      alternative { feature Lcd feature Oled }\n    }\n  }\n  optional { feature Camera feature Gps }\n}\nconstraints { Gps => Oled }\n"
+    },
+    "text": "selection of Phones {\n  select Oled\n  select Gps\n}\n",
+    "expect": {
+      "errors": [],
+      "warnings": []
+    }
+  },
+  {
+    "name": "an alternative needs one of its features",
+    "with": {
+      "featuremodel": "featuremodel Phones\nfeature Phones {\n  mandatory {\n    feature Screen {\n      alternative { feature Lcd feature Oled }\n    }\n  }\n  optional { feature Camera feature Gps }\n}\nconstraints { Gps => Oled }\n"
+    },
+    "text": "selection of Phones {\n}\n",
+    "expect": {
+      "errors": [
+        "choose exactly one of Lcd, Oled (0 selected) for 'Screen'"
+      ]
+    }
+  },
+  {
+    "name": "an alternative takes only one",
+    "with": {
+      "featuremodel": "featuremodel Phones\nfeature Phones {\n  mandatory {\n    feature Screen {\n      alternative { feature Lcd feature Oled }\n    }\n  }\n  optional { feature Camera feature Gps }\n}\nconstraints { Gps => Oled }\n"
+    },
+    "text": "selection of Phones {\n  select Lcd\n  select Oled\n}\n",
+    "expect": {
+      "errors": [
+        "choose exactly one of Lcd, Oled (2 selected)"
+      ]
+    }
+  },
+  {
+    "name": "a constraint pulls in what it needs, which can break a group",
+    "with": {
+      "featuremodel": "featuremodel Phones\nfeature Phones {\n  mandatory {\n    feature Screen {\n      alternative { feature Lcd feature Oled }\n    }\n  }\n  optional { feature Camera feature Gps }\n}\nconstraints { Gps => Oled }\n"
+    },
+    "text": "selection of Phones {\n  select Lcd\n  select Gps\n}\n",
+    "expect": {
+      "errors": [
+        "choose exactly one of Lcd, Oled (2 selected)"
+      ]
+    }
+  },
+  {
+    "name": "a feature the model requires cannot be deselected",
+    "with": {
+      "featuremodel": "featuremodel Phones\nfeature Phones {\n  mandatory {\n    feature Screen {\n      alternative { feature Lcd feature Oled }\n    }\n  }\n  optional { feature Camera feature Gps }\n}\nconstraints { Gps => Oled }\n"
+    },
+    "text": "selection of Phones {\n  select Oled\n  deselect Screen\n}\n",
+    "expect": {
+      "errors": [
+        "'Screen' is deselected, but the selection needs it"
+      ]
+    }
+  },
+  {
+    "name": "a feature cannot be selected and deselected",
+    "with": {
+      "featuremodel": "featuremodel Phones\nfeature Phones {\n  mandatory {\n    feature Screen {\n      alternative { feature Lcd feature Oled }\n    }\n  }\n  optional { feature Camera feature Gps }\n}\nconstraints { Gps => Oled }\n"
+    },
+    "text": "selection of Phones {\n  select Oled\n  select Camera\n  deselect Camera\n}\n",
+    "expect": {
+      "errors": [
+        "'Camera' is both selected and deselected",
+        "'Camera' is deselected, but the selection needs it"
+      ]
+    }
+  },
+  {
+    "name": "a feature chosen twice",
+    "with": {
+      "featuremodel": "featuremodel Phones\nfeature Phones {\n  mandatory {\n    feature Screen {\n      alternative { feature Lcd feature Oled }\n    }\n  }\n  optional { feature Camera feature Gps }\n}\nconstraints { Gps => Oled }\n"
+    },
+    "text": "selection of Phones {\n  select Oled\n  select Oled\n}\n",
+    "expect": {
+      "errors": [
+        "'Oled' is chosen twice"
+      ]
+    }
+  },
+  {
+    "name": "only the features of the model can be chosen",
+    "with": {
+      "featuremodel": "featuremodel Phones\nfeature Phones {\n  mandatory {\n    feature Screen {\n      alternative { feature Lcd feature Oled }\n    }\n  }\n  optional { feature Camera feature Gps }\n}\nconstraints { Gps => Oled }\n"
+    },
+    "text": "selection of Phones {\n  select Oled\n  select Radio\n}\n",
+    "expect": {
+      "errors": [
+        "Radio"
+      ]
+    }
+  },
+  {
+    "name": "the model must exist",
+    "with": {
+      "featuremodel": "featuremodel Phones\nfeature Phones {\n  mandatory {\n    feature Screen {\n      alternative { feature Lcd feature Oled }\n    }\n  }\n  optional { feature Camera feature Gps }\n}\nconstraints { Gps => Oled }\n"
+    },
+    "text": "selection of Tablets {\n}\n",
+    "expect": {
+      "errors": [
+        "Tablets"
+      ]
+    }
+  },
+  {
+    "name": "& binds tighter than |: A | B & C is A | (B & C)",
+    "with": {
+      "featuremodel": "featuremodel M\nfeature M {\n  optional { feature A feature B feature C feature D }\n}\nconstraints { A | B & C }\n"
+    },
+    "text": "selection of M {\n  select A\n}\n",
+    "expect": {
+      "errors": []
+    }
+  },
+  {
+    "name": "& binds tighter than |: B alone does not satisfy it",
+    "with": {
+      "featuremodel": "featuremodel M\nfeature M {\n  optional { feature A feature B feature C feature D }\n}\nconstraints { A | B & C }\n"
+    },
+    "text": "selection of M {\n  select B\n}\n",
+    "expect": {
+      "errors": [
+        "the constraint (A | (B & C)) does not hold"
+      ]
+    }
+  },
+  {
+    "name": "=> groups to the left, as in UVL: A => B => C is (A => B) => C, which needs C when A is not there",
+    "with": {
+      "featuremodel": "featuremodel M\nfeature M {\n  optional { feature A feature B feature C feature D }\n}\nconstraints { A => B => C }\n"
+    },
+    "text": "selection of M {\n  deselect C\n}\n",
+    "expect": {
+      "errors": [
+        "'C' is deselected, but the selection needs it"
+      ]
+    }
+  },
+  {
+    "name": "=> binds looser than |: A | B => C needs C once B is there",
+    "with": {
+      "featuremodel": "featuremodel M\nfeature M {\n  optional { feature A feature B feature C feature D }\n}\nconstraints { A | B => C }\n"
+    },
+    "text": "selection of M {\n  select B\n  deselect C\n}\n",
+    "expect": {
+      "errors": [
+        "'C' is deselected, but the selection needs it"
+      ]
+    }
+  },
+  {
+    "name": "! applies to the operand next to it",
+    "with": {
+      "featuremodel": "featuremodel M\nfeature M {\n  optional { feature A feature B feature C feature D }\n}\nconstraints { !A & B }\n"
+    },
+    "text": "selection of M {\n  select B\n}\n",
+    "expect": {
+      "errors": []
+    }
+  },
+  {
+    "name": "a cardinality group takes the number it says",
+    "with": {
+      "featuremodel": "featuremodel M\nfeature M {\n  [1..2] { feature A feature B feature C }\n}\n"
+    },
+    "text": "selection of M {\n  select A\n  select B\n}\n",
+    "expect": {
+      "errors": []
+    }
+  },
+  {
+    "name": "too many of a cardinality group",
+    "with": {
+      "featuremodel": "featuremodel M\nfeature M {\n  [1..2] { feature A feature B feature C }\n}\n"
+    },
+    "text": "selection of M {\n  select A\n  select B\n  select C\n}\n",
+    "expect": {
+      "errors": [
+        "choose between 1 and 2 of A, B, C (3 selected) for 'M'"
+      ]
+    }
+  },
+  {
+    "name": "too few of a cardinality group",
+    "with": {
+      "featuremodel": "featuremodel M\nfeature M {\n  [1..2] { feature A feature B feature C }\n}\n"
+    },
+    "text": "selection of M {\n}\n",
+    "expect": {
+      "errors": [
+        "choose between 1 and 2 of A, B, C (0 selected) for 'M'"
+      ]
+    }
+  },
+  {
+    "name": "[m..*] has no upper bound",
+    "with": {
+      "featuremodel": "featuremodel M\nfeature M {\n  [2..*] { feature A feature B feature C }\n}\n"
+    },
+    "text": "selection of M {\n  select A\n  select B\n  select C\n}\n",
+    "expect": {
+      "errors": []
+    }
+  },
+  {
+    "name": "[m] is exactly m",
+    "with": {
+      "featuremodel": "featuremodel M\nfeature M {\n  [2] { feature A feature B feature C }\n}\n"
+    },
+    "text": "selection of M {\n  select A\n}\n",
+    "expect": {
+      "errors": [
+        "choose exactly 2 of A, B, C (1 selected)"
+      ]
+    }
+  },
+  {
+    "name": "a constraint adds what a feature implies: Gps needs Oled",
+    "with": {
+      "featuremodel": "featuremodel Phones\nfeature Phones {\n  mandatory {\n    feature Screen {\n      alternative { feature Lcd feature Oled }\n    }\n  }\n  optional { feature Camera feature Gps }\n}\nconstraints { Gps => Oled }\n"
+    },
+    "text": "selection of Phones {\n  select Gps\n}\n",
+    "expect": {
+      "errors": []
+    }
+  },
+  {
+    "name": "an implication is followed through the constraints: A => B, B => C",
+    "with": {
+      "featuremodel": "featuremodel M\nfeature M {\n  optional { feature A feature B feature C feature D }\n}\nconstraints { A => B\n  B => C }\n"
+    },
+    "text": "selection of M {\n  select A\n}\n",
+    "expect": {
+      "errors": []
+    }
+  },
+  {
+    "name": "a clause says the same: !A | B",
+    "with": {
+      "featuremodel": "featuremodel M\nfeature M {\n  optional { feature A feature B feature C feature D }\n}\nconstraints { !A | B }\n"
+    },
+    "text": "selection of M {\n  select A\n}\n",
+    "expect": {
+      "errors": []
+    }
+  },
+  {
+    "name": "a clause with two ways left leaves the choice to the selection",
+    "with": {
+      "featuremodel": "featuremodel M\nfeature M {\n  optional { feature A feature B feature C feature D }\n}\nconstraints { A | B }\n"
+    },
+    "text": "selection of M {\n  select C\n}\n",
+    "expect": {
+      "errors": [
+        "the constraint (A | B) does not hold"
+      ]
+    }
+  },
+  {
+    "name": "a clause with one way left takes it: !A | B | C with A and B out",
+    "with": {
+      "featuremodel": "featuremodel M\nfeature M {\n  optional { feature A feature B feature C feature D }\n}\nconstraints { !A | B | C }\n"
+    },
+    "text": "selection of M {\n  select A\n  deselect B\n}\n",
+    "expect": {
+      "errors": []
+    }
+  },
+  {
+    "name": "a feature that is deselected is not added for a constraint that needs it",
+    "with": {
+      "featuremodel": "featuremodel M\nfeature M {\n  optional { feature A feature B feature C feature D }\n}\nconstraints { A => B }\n"
+    },
+    "text": "selection of M {\n  select A\n  deselect B\n}\n",
+    "expect": {
+      "errors": [
+        "'B' is deselected, but the selection needs it"
+      ]
+    }
+  },
+  {
+    "name": "what cannot be made to hold is still reported: A => !B",
+    "with": {
+      "featuremodel": "featuremodel M\nfeature M {\n  optional { feature A feature B feature C feature D }\n}\nconstraints { A => !B }\n"
+    },
+    "text": "selection of M {\n  select A\n  select B\n}\n",
+    "expect": {
+      "errors": [
+        "the constraint (A => !B) does not hold"
+      ]
+    }
+  },
+  {
+    "name": "a constraint that is a feature on its own makes it mandatory",
+    "with": {
+      "featuremodel": "featuremodel M\nfeature M {\n  optional { feature A feature B feature C feature D }\n}\nconstraints { A }\n"
+    },
+    "text": "selection of M {\n}\n",
+    "expect": {
+      "errors": []
+    }
+  }
+]

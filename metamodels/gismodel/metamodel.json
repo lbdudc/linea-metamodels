@@ -1,0 +1,9 @@
+{
+  "name": "gismodel",
+  "version": "2.0.0",
+  "description": "GIS model: maps, layers and styles. A GeoJSON layer must show a data-model entity",
+  "requires": {
+    "../common": "^1.1.0",
+    "../datamodel": "^1.2.0"
+  }
+}

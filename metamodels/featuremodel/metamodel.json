@@ -1,0 +1,8 @@
+{
+  "name": "featuremodel",
+  "version": "1.0.0",
+  "description": "Feature model of an SPL (features, groups, constraints) and the feature selection of its products. Configured once per SPL, instantiated per product",
+  "requires": {
+    "../common": "^1.1.0"
+  }
+}

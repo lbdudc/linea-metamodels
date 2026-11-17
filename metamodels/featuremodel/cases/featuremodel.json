@@ -1,0 +1,140 @@
+[
+  {
+    "name": "a valid feature model",
+    "with": {},
+    "text": "featuremodel Phones\nfeature Phones {\n  mandatory {\n    feature Screen {\n      alternative { feature Lcd feature Oled }\n    }\n  }\n  optional { feature Camera feature Gps }\n}\nconstraints { Gps => Oled }\n",
+    "expect": {
+      "errors": [],
+      "warnings": []
+    }
+  },
+  {
+    "name": "a feature name is used once in the tree",
+    "with": {},
+    "text": "featuremodel Phones\nfeature Phones {\n  mandatory {\n    feature Screen {\n      alternative { feature Lcd feature Oled }\n    }\n  }\n  optional { feature Camera feature Camera }\n}\nconstraints { Camera => Oled }\n",
+    "expect": {
+      "errors": [
+        "duplicate feature 'Camera'"
+      ]
+    }
+  },
+  {
+    "name": "a group with nothing in it warns",
+    "with": {},
+    "text": "featuremodel M\nfeature M {\n  optional { }\n}\n",
+    "expect": {
+      "errors": [],
+      "warnings": [
+        "the optional group of 'M' has no features"
+      ]
+    }
+  },
+  {
+    "name": "an alternative of one feature is not a choice",
+    "with": {},
+    "text": "featuremodel M\nfeature M {\n  alternative { feature Only }\n}\n",
+    "expect": {
+      "errors": [],
+      "warnings": [
+        "has one feature"
+      ]
+    }
+  },
+  {
+    "name": "a constraint can only name features of the model",
+    "with": {},
+    "text": "featuremodel Phones\nfeature Phones {\n  mandatory {\n    feature Screen {\n      alternative { feature Lcd feature Oled }\n    }\n  }\n  optional { feature Camera feature Gps }\n}\nconstraints { Gps => Nope }\n",
+    "expect": {
+      "errors": [
+        "Nope"
+      ]
+    }
+  },
+  {
+    "name": "constraints combine with the usual operators and parentheses",
+    "with": {},
+    "text": "featuremodel Phones\nfeature Phones {\n  mandatory {\n    feature Screen {\n      alternative { feature Lcd feature Oled }\n    }\n  }\n  optional { feature Camera feature Gps }\n}\nconstraints { !Gps | Camera & Oled\n  (Gps <=> Camera) => Oled }\n",
+    "expect": {
+      "errors": [],
+      "warnings": []
+    }
+  },
+  {
+    "name": "names with spaces are written in quotes",
+    "with": {},
+    "text": "featuremodel \"Phone line\"\nfeature \"Phone line\" {\n  optional { feature \"Dual sim\" }\n}\nconstraints { \"Dual sim\" => \"Phone line\" }\n",
+    "expect": {
+      "errors": [],
+      "warnings": []
+    }
+  },
+  {
+    "name": "an abstract feature",
+    "with": {},
+    "text": "featuremodel M\nabstract feature M {\n  optional { feature A }\n}\n",
+    "expect": {
+      "errors": [],
+      "warnings": []
+    }
+  },
+  {
+    "name": "group cardinalities: [m..n], [m..*] and [m]",
+    "with": {},
+    "text": "featuremodel M\nfeature M {\n  [1..2] { feature A feature B }\n  [1..*] { feature C feature D }\n  [2] { feature E feature F }\n}\n",
+    "expect": {
+      "errors": [],
+      "warnings": []
+    }
+  },
+  {
+    "name": "a cardinality cannot end below where it starts",
+    "with": {},
+    "text": "featuremodel M\nfeature M {\n  [2..1] { feature A feature B }\n}\n",
+    "expect": {
+      "errors": [
+        "is empty: the most is below the least"
+      ]
+    }
+  },
+  {
+    "name": "a cardinality cannot ask for more than the group has",
+    "with": {},
+    "text": "featuremodel M\nfeature M {\n  [3] { feature A feature B }\n}\n",
+    "expect": {
+      "errors": [
+        "asks for at least 3, but the group has 2"
+      ]
+    }
+  },
+  {
+    "name": "a name UVL cannot write warns",
+    "with": {},
+    "text": "featuremodel M\nfeature M {\n  optional { feature \"a.b\" }\n}\n",
+    "expect": {
+      "errors": [],
+      "warnings": [
+        "cannot be written in UVL"
+      ]
+    }
+  },
+  {
+    "name": "a name that is also a word of the grammar is written in quotes",
+    "with": {},
+    "text": "featuremodel M\nfeature M {\n  optional { feature \"select\" feature \"or\" }\n}\n",
+    "expect": {
+      "errors": [],
+      "warnings": []
+    }
+  },
+  {
+    "name": "an empty group warns that UVL will not have it",
+    "with": {},
+    "text": "featuremodel M\nfeature M {\n  optional { }\n}\n",
+    "expect": {
+      "errors": [],
+      "warnings": [
+        "is left out of the UVL"
+      ]
+    }
+  }
+]

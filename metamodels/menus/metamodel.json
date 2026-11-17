@@ -1,0 +1,8 @@
+{
+  "name": "menus",
+  "version": "2.0.0",
+  "description": "Menus: the navigation of the product, as the platform lays it out: menus of items that open a screen of the platform or group more items",
+  "requires": {
+    "../common": "^1.1.0"
+  }
+}
